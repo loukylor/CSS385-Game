@@ -163,7 +163,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Set actual velocity to temp vel var
         rb.velocity = new Vector3(vel.x, rb.velocity.y, vel.y);
-        Debug.Log(rb.velocity);
     }
 
     private void Jump()

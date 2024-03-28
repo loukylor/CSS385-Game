@@ -12,6 +12,9 @@ The controls are simple:
  - **Space** to jump
  - **Shift** to sprint
 
+If the controls aren't working, make sure to click inside the player window
+(not the tab itself, but the 3d environment) so that your mouse dissapears.
+
 ## Mechanics
 
 The game is a simple 3d platformer, where the main character simply moves around
