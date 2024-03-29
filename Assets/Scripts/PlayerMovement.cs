@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public float airAcceleration = 5;
     public float maxMovementSpeed = 5;
     public float maxSprintSpeed = 10;
+    public float maxAirSpeed = 3;
     public float speedCap = 100;
     public float drag = 0.3f;
 
@@ -28,11 +29,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Camera cam;
 
-    private Vector3 movementInput;
+    private bool isSprint = false;
+    private Vector2 movementInput;
 
     private bool isSpaceUp = false;
     private bool isSpaceDown = false;
     private float lastJumpTime = 0;
+    private Vector2 lastJumpDir;
 
     private void Start()
     {
@@ -64,9 +67,9 @@ public class PlayerMovement : MonoBehaviour
             isSpaceUp = true;
         }
 
-        movementInput = new Vector3(
+        isSprint = Input.GetKey(KeyCode.LeftShift);
+        movementInput = new Vector2(
             Input.GetAxis("Horizontal"),
-            Input.GetKey(KeyCode.LeftShift) ? 1 : 0,
             Input.GetAxis("Vertical")
         );
 
@@ -119,19 +122,23 @@ public class PlayerMovement : MonoBehaviour
         // Generally grabbing inputs in FixedUpdates isn't good, but since we
         // aren't grabbing specific keyup or keydown events, we should be ok
         float strafeInput = movementInput.x;
-        float forwardInput = movementInput.z;
-        bool isSprinting = movementInput.y == 1;
-        bool isMovePressed = Mathf.Abs(strafeInput) > 0.001 || Mathf.Abs(forwardInput) > 0.001;
+        float forwardInput = movementInput.y;
+        bool isMovePressed = movementInput.magnitude > 0.001;
 
         // Check which accel and max speed to use
         float accel;
         float maxSpeed;
         if (!IsGrounded)
         {
+            // Lessen accel if trying to move in same direction as when jump
+            // This is so you don't suddenly accelerate forward when you jump
+            // from non sprinting speed
             accel = airAcceleration;
-            maxSpeed = maxSprintSpeed;
+            accel *= Mathf.Clamp(Vector2.Angle(lastJumpDir, movementInput) / 180, 0.1f, 1);
+
+            maxSpeed = maxAirSpeed;
         }
-        else if (isSprinting && forwardInput > 0)
+        else if (isSprint && forwardInput > 0)
         {
             accel = sprintAcceleration;
             maxSpeed = maxSprintSpeed;
@@ -150,8 +157,9 @@ public class PlayerMovement : MonoBehaviour
                 strafeInput * Mathf.Sin(rot) + forwardInput * Mathf.Cos(rot)
             );
 
-        // Cap move speed only when trying to move
-        if (isMovePressed)
+        // Cap move speed only when trying to move, or, if not grounded, then 
+        // only cap speed when vel is less than max speed + 1
+        if (isMovePressed && (IsGrounded || vel.magnitude < maxSpeed + 1))
         {
             vel = vel.normalized * Mathf.Min(vel.magnitude, maxSpeed);
         }
@@ -173,6 +181,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (IsGrounded && Time.time - lastJumpTime > jumpCooldown)
             {
+                lastJumpDir = movementInput.magnitude < 0.001 ? Vector2.up : movementInput;
                 lastJumpTime = Time.time;
 
                 // Add force rather than changing vel over multiple frames as it is
