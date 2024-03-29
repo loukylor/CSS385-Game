@@ -686,16 +686,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 200
   sprintAcceleration: 200
-  airAcceleration: 5
+  airAcceleration: 10
   maxMovementSpeed: 5
   maxSprintSpeed: 10
   speedCap: 100
   drag: 0.3
   mouseSensitivity: 1
   jumpCooldown: 0.25
-  jumpHeight: 300
+  jumpHeight: 500
   additionalJumpTime: 0.25
-  additionalJumpHeight: 500
+  additionalJumpHeight: 750
 --- !u!54 &1221673881
 Rigidbody:
   m_ObjectHideFlags: 0
