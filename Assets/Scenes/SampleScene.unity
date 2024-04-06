@@ -686,9 +686,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   acceleration: 200
   sprintAcceleration: 200
-  airAcceleration: 10
+  airAcceleration: 20
   maxMovementSpeed: 5
   maxSprintSpeed: 10
+  maxAirSpeed: 3
   speedCap: 100
   drag: 0.3
   mouseSensitivity: 1

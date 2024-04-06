@@ -31,11 +31,13 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isSprint = false;
     private Vector2 movementInput;
+    private Vector2 rotatedMovementInput;
 
     private bool isSpaceUp = false;
     private bool isSpaceDown = false;
     private float lastJumpTime = 0;
     private Vector2 lastJumpDir;
+    private bool canDoubleJump = false;
 
     private void Start()
     {
@@ -72,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
             Input.GetAxis("Horizontal"),
             Input.GetAxis("Vertical")
         );
+        rotatedMovementInput = movementInput.Rotate(-transform.rotation.eulerAngles.y);
 
         // Do this in update to make it more snappy
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
@@ -116,13 +119,10 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector2 vel = new(rb.velocity.x, rb.velocity.z);
-        float rot = -transform.rotation.eulerAngles.y * Mathf.Deg2Rad;
 
         // Grab inputs
         // Generally grabbing inputs in FixedUpdates isn't good, but since we
         // aren't grabbing specific keyup or keydown events, we should be ok
-        float strafeInput = movementInput.x;
-        float forwardInput = movementInput.y;
         bool isMovePressed = movementInput.magnitude > 0.001;
 
         // Check which accel and max speed to use
@@ -138,7 +138,7 @@ public class PlayerMovement : MonoBehaviour
 
             maxSpeed = maxAirSpeed;
         }
-        else if (isSprint && forwardInput > 0)
+        else if (isSprint && movementInput.y > 0)
         {
             accel = sprintAcceleration;
             maxSpeed = maxSprintSpeed;
@@ -150,12 +150,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Apply accel
-        vel += Time.fixedDeltaTime * accel
-            * new Vector2(
-                // Had to look up how to rotate a 2d vector
-                strafeInput * Mathf.Cos(rot) - forwardInput * Mathf.Sin(rot),
-                strafeInput * Mathf.Sin(rot) + forwardInput * Mathf.Cos(rot)
-            );
+        vel += Time.fixedDeltaTime * accel * rotatedMovementInput;
 
         // Cap move speed only when trying to move, or, if not grounded, then 
         // only cap speed when vel is less than max speed + 1
@@ -179,14 +174,36 @@ public class PlayerMovement : MonoBehaviour
         // https://github.com/WSPTA-Cat-Game/CatGame/blob/master/Assets/Scripts/CharacterControl/CharacterMovement.cs#L204
         if (isSpaceDown)
         {
-            if (IsGrounded && Time.time - lastJumpTime > jumpCooldown)
+            if ((IsGrounded || canDoubleJump) && Time.time - lastJumpTime > jumpCooldown)
             {
                 lastJumpDir = movementInput.magnitude < 0.001 ? Vector2.up : movementInput;
                 lastJumpTime = Time.time;
 
+                // Reset y velocity so it doesn't hinder the jump
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                
                 // Add force rather than changing vel over multiple frames as it is
                 // easier logically
-                rb.AddForce(jumpHeight * rb.mass * Vector3.up);
+                if (!IsGrounded)
+                {
+                    canDoubleJump = false;
+                    // Rotate velocity to give more air control on double jump
+                    Vector3 newVelDir = new(rotatedMovementInput.x, 0, rotatedMovementInput.y);
+                    float amountRotated = 1 - Mathf.Pow(Vector3.Angle(rb.velocity, newVelDir) / 180, 0.25f);
+                    Vector3 newVel = Vector3.RotateTowards(rb.velocity, newVelDir, 10000, 0) * amountRotated;
+
+                    // Make new vel have a minimum speed
+                    if (newVel.magnitude < maxAirSpeed)
+                    {
+                        newVel = 1.5f * maxAirSpeed * newVelDir.normalized;
+                    }
+                    rb.velocity = newVel;
+                    rb.AddForce(jumpHeight * 0.8f * rb.mass * Vector3.up);
+                }
+                else
+                {
+                    rb.AddForce(jumpHeight * rb.mass * Vector3.up);
+                }
 
                 isSpaceUp = false;
             }
@@ -209,6 +226,7 @@ public class PlayerMovement : MonoBehaviour
             if (Vector3.Angle(tempContacts[i].normal, Vector3.up) < 10)
             {
                 IsGrounded = true;
+                canDoubleJump = true;
                 break;
             }
         }
