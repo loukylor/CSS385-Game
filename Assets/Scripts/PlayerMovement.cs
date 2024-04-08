@@ -189,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
                     canDoubleJump = false;
                     // Rotate velocity to give more air control on double jump
                     Vector3 newVelDir = new(rotatedMovementInput.x, 0, rotatedMovementInput.y);
-                    float amountRotated = 1 - Mathf.Pow(Vector3.Angle(rb.velocity, newVelDir) / 180, 0.25f);
+                    float amountRotated = 1 - Vector3.Angle(rb.velocity, newVelDir) / 180;
                     Vector3 newVel = Vector3.RotateTowards(rb.velocity, newVelDir, 10000, 0) * amountRotated;
 
                     // Make new vel have a minimum speed
