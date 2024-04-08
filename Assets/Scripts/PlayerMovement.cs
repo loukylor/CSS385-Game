@@ -198,11 +198,11 @@ public class PlayerMovement : MonoBehaviour
                         newVel = 1.5f * maxAirSpeed * newVelDir.normalized;
                     }
                     rb.velocity = newVel;
-                    rb.AddForce(jumpHeight * 0.8f * rb.mass * Vector3.up);
+                    rb.AddForce(jumpHeight * 0.8f * Vector3.up, ForceMode.Acceleration);
                 }
                 else
                 {
-                    rb.AddForce(jumpHeight * rb.mass * Vector3.up);
+                    rb.AddForce(jumpHeight * Vector3.up, ForceMode.Acceleration);
                 }
 
                 isSpaceUp = false;
@@ -213,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
         else if (!isSpaceUp && Time.time - lastJumpTime <= additionalJumpTime)
         {
             // Stop jump extension if let go of space
-            rb.AddForce(additionalJumpHeight * Time.fixedDeltaTime * rb.mass * Vector3.up);
+            rb.AddForce(additionalJumpHeight * Time.fixedDeltaTime * Vector3.up, ForceMode.Acceleration);
         }
     }
 
