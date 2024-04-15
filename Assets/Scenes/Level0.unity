@@ -855,6 +855,7 @@ MonoBehaviour:
   connectedBody: {fileID: 1221673881}
   hookSpeed: 30
   velocityChange: 0.5
+  hookTimeSeconds: 3
 --- !u!54 &1231129120
 Rigidbody:
   m_ObjectHideFlags: 0
