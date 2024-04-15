@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -10,13 +11,13 @@ public class GrapplingHook : MonoBehaviour
     public Rigidbody connectedBody;
     public float hookSpeed = 10;
     public float velocityChange = 5;
+    public float hookTimeSeconds = 3;
+
+    public event Action<float> OnHookTimeChange;
 
     private HookState State 
-    { 
-        get
-        {
-            return _state;
-        }
+    {
+        get => _state;
         set
         {
             if (_state != value)
@@ -43,7 +44,40 @@ public class GrapplingHook : MonoBehaviour
     private new Collider collider;
     private Rigidbody rb;
     private LineRenderer line;
-    private Vector3[] linePoints = new Vector3[2];
+    private readonly Vector3[] linePoints = new Vector3[2];
+
+    private float HookTimeRemaining
+    {
+        get => _hookTimeRemaining;
+        set
+        {
+            if (value > hookTimeSeconds)
+            {
+                if (_hookTimeRemaining == hookTimeSeconds)
+                {
+                    return;
+                }
+
+                _hookTimeRemaining = hookTimeSeconds;
+            }
+            else if (value < 0)
+            {
+                if (_hookTimeRemaining == 0)
+                {
+                    return;
+                }
+
+                _hookTimeRemaining = 0;
+            }
+            else
+            {
+                _hookTimeRemaining = value;
+            }
+
+            OnHookTimeChange?.Invoke(_hookTimeRemaining / hookTimeSeconds);
+        }
+    }
+    private float _hookTimeRemaining;
 
     private void Start()
     {
@@ -54,6 +88,8 @@ public class GrapplingHook : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.SetPositions(linePoints);
         line.enabled = false;
+
+        HookTimeRemaining = hookTimeSeconds;
     }
 
     private void Update()
@@ -70,10 +106,12 @@ public class GrapplingHook : MonoBehaviour
                 }
 
                 transform.position = follow.position;
+                HookTimeRemaining += Time.deltaTime / 5;
 
-                if (Input.GetKey(KeyCode.E))
+                if (Input.GetKey(KeyCode.E) && HookTimeRemaining > 0.5f)
                 {
                     State = HookState.Shooting;
+                    HookTimeRemaining -= 0.25f;
                 }
                 break;
 
@@ -109,6 +147,13 @@ public class GrapplingHook : MonoBehaviour
                 linePoints[0] = transform.position;
                 linePoints[1] = connectedBody.position;
                 line.SetPositions(linePoints);
+
+                if (HookTimeRemaining <= 0)
+                {
+                    State = HookState.Following;
+                }
+
+                HookTimeRemaining -= Time.deltaTime;
                 break;
         }
 
