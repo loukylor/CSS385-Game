@@ -1,4 +1,5 @@
 public enum TriggerAction
 {
-    LoadScene
+    LoadSceneSingle,
+    LoadSceneAdditive
 }

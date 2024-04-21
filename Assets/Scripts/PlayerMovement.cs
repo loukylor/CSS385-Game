@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jump")]
     public float jumpCooldown = 0.25f;
     public float jumpHeight = 300;
+    public bool canDoubleJump = false;
     public float additionalJumpTime = 0.25f;
     public float additionalJumpHeight = 500;
 
@@ -37,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isSpaceDown = false;
     private float lastJumpTime = 0;
     private Vector2 lastJumpDir;
-    private bool canDoubleJump = false;
+    private bool doubleJumpAvail = false;
 
     private void Start()
     {
@@ -174,7 +175,7 @@ public class PlayerMovement : MonoBehaviour
         // https://github.com/WSPTA-Cat-Game/CatGame/blob/master/Assets/Scripts/CharacterControl/CharacterMovement.cs#L204
         if (isSpaceDown)
         {
-            if ((IsGrounded || canDoubleJump) && Time.time - lastJumpTime > jumpCooldown)
+            if ((IsGrounded || (doubleJumpAvail && canDoubleJump)) && Time.time - lastJumpTime > jumpCooldown)
             {
                 lastJumpDir = movementInput.magnitude < 0.001 ? Vector2.up : movementInput;
                 lastJumpTime = Time.time;
@@ -186,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
                 // easier logically
                 if (!IsGrounded)
                 {
-                    canDoubleJump = false;
+                    doubleJumpAvail = false;
                     // Rotate velocity to give more air control on double jump
                     Vector3 newVelDir = new(rotatedMovementInput.x, 0, rotatedMovementInput.y);
                     float amountRotated = 1 - Vector3.Angle(rb.velocity, newVelDir) / 180;
@@ -226,7 +227,7 @@ public class PlayerMovement : MonoBehaviour
             if (Vector3.Angle(tempContacts[i].normal, Vector3.up) < 10)
             {
                 IsGrounded = true;
-                canDoubleJump = true;
+                doubleJumpAvail = true;
                 break;
             }
         }

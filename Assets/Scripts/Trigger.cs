@@ -16,8 +16,11 @@ public class Trigger : MonoBehaviour
 
         switch (action)
         {
-            case TriggerAction.LoadScene:
+            case TriggerAction.LoadSceneSingle:
                 SceneManager.LoadScene(target, LoadSceneMode.Single);
+                break;
+            case TriggerAction.LoadSceneAdditive:
+                SceneManager.LoadScene(target, LoadSceneMode.Additive);
                 break;
         }
     }
