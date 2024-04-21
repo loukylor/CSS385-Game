@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.LoadScene("Level0");
     }
 
     private void Start()
