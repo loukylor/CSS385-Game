@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000002, guid: 893dfefc51aabbd47bbe2c2310ae7ff4, type: 2}
+  m_LightingDataAsset: {fileID: 112000004, guid: 893dfefc51aabbd47bbe2c2310ae7ff4, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 412222079}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.185938, y: -2.04, z: 8.903293}
+  m_LocalPosition: {x: 3.185938, y: -2.21, z: 8.903293}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -187,7 +187,7 @@ Transform:
   m_GameObject: {fileID: 606815125}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.38, y: 4.29, z: 14.78}
+  m_LocalPosition: {x: -8.38, y: 12.41, z: 14.78}
   m_LocalScale: {x: 7, y: 1, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -292,7 +292,7 @@ Transform:
   m_GameObject: {fileID: 702088432}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.85, y: 2.5, z: 6.19}
+  m_LocalPosition: {x: -1.76, y: 6.46, z: 6.19}
   m_LocalScale: {x: 7, y: 1, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -397,7 +397,7 @@ Transform:
   m_GameObject: {fileID: 740437396}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.02, y: 6.23, z: 5.29}
+  m_LocalPosition: {x: -20.8, y: 17.9, z: 7.39}
   m_LocalScale: {x: 7, y: 1, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -502,7 +502,7 @@ Transform:
   m_GameObject: {fileID: 1488113714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.02, y: 8.65, z: -5.4}
+  m_LocalPosition: {x: -23.72, y: 18.35, z: -21.72}
   m_LocalScale: {x: 7, y: 1, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -598,7 +598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   action: 0
-  target: Level1
+  target: Level2
 --- !u!4 &1569673226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 41672976663705822, guid: 13d44a0fe85e45d48bb94292d85edfe2, type: 3}
