@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 [RequireComponent(typeof(Collider))]
@@ -9,6 +10,7 @@ public class GrapplingHook : MonoBehaviour
 {
     public Transform follow;
     public Rigidbody connectedBody;
+    public Player player;
     public float hookSpeed = 10;
     public float velocityChange = 5;
     public float hookTimeSeconds = 3;
@@ -90,6 +92,19 @@ public class GrapplingHook : MonoBehaviour
         line.enabled = false;
 
         HookTimeRemaining = hookTimeSeconds;
+
+        if (player != null)
+        {
+            player.OnDeath += ResetHook;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (player != null)
+        {
+            player.OnDeath -= ResetHook;
+        }
     }
 
     private void Update()
@@ -181,6 +196,12 @@ public class GrapplingHook : MonoBehaviour
         {
             State = HookState.Attached;
         }
+    }
+
+    private void ResetHook()
+    {
+        State = HookState.Following;
+        HookTimeRemaining = hookTimeSeconds;
     }
 
     private enum HookState

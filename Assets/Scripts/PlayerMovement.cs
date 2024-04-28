@@ -103,12 +103,6 @@ public class PlayerMovement : MonoBehaviour
     // Physics should always be handled in fixed update
     private void FixedUpdate()
     {
-        // Temp code to "respawn" player
-        if (transform.position.y < -5)
-        {
-            transform.position = new Vector3(0, 2, 0);
-        }
-
         Move();
         Jump();
 
