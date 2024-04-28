@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
         if (transform.position.y < -5)
         {
             transform.position = new Vector3(0, 2, 0);
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
             OnDeath?.Invoke();
         }
     }
